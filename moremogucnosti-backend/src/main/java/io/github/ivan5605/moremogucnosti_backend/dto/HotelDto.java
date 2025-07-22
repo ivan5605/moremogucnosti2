@@ -1,4 +1,5 @@
 package io.github.ivan5605.moremogucnosti_backend.dto;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 
@@ -25,5 +26,6 @@ public class HotelDto {
 
     //@NotBlank(message = "Cijena noćenja ne smije biti prazna"), anotacija nije moguca jer je cijenaNocenja tipa int, a ne String
     @NotNull(message = "Cijena noćenja ne smije biti prazna")
+    @Min(value = 1, message = "Cijena noćenja mora biti veća od 0")
     private int cijenaNocenja;
 }

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice // Ova anotacija omogućuje globalno upravljanje iznimkama u kontroleru
-public class GlobalExceptionHandler {
+public class ValidationException {
 
     @ExceptionHandler(MethodArgumentNotValidException.class) // Ova metoda će obraditi iznimke koje se javljaju kada validacija argumenta nije uspjela
     public ResponseEntity<Map<String, String>> handValidationErrors(MethodArgumentNotValidException ex){

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/hoteli") // Definira osnovnu putanju za sve metode u ovom kontroleru
 
 @AllArgsConstructor
-@RestControllerAdvice // Anotacija koja omogućava globalno rukovanje iznimkama u ovom kontroleru
 
 public class HotelController {
     // Ovdje će se definirati metode za upravljanje hotelima, npr. za kreiranje, dohvaćanje, ažuriranje i brisanje hotela
