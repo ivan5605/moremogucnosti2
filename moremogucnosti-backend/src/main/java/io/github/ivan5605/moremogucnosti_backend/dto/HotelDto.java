@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-// DTO (Data Transfer Object) klasa za prijenos podataka o hotelu na klijentsku stranu (frontend)
+// DTO (Data Transfer Object) klasa za prijenos podataka o hotelu na klijentsku stranu (frontend), i za primanje sa frontenda od korisnika
 public class HotelDto {
     private Long id;
 
@@ -27,5 +27,5 @@ public class HotelDto {
     //@NotBlank(message = "Cijena noćenja ne smije biti prazna"), anotacija nije moguca jer je cijenaNocenja tipa int, a ne String
     @NotNull(message = "Cijena noćenja ne smije biti prazna")
     @Min(value = 1, message = "Cijena noćenja mora biti veća od 0")
-    private int cijenaNocenja;
+    private Integer cijenaNocenja;
 }

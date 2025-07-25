@@ -1,7 +1,8 @@
-package exception;
+package io.github.ivan5605.moremogucnosti_backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,12 +26,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidatioException(MethodArgumentNotValidException ex){
-        Map<String, Object> errorResponse = new HashMap<>();
+    @ExceptionHandler(MethodArgumentNotValidException.class) // Ova metoda će obraditi iznimke koje se javljaju kada validacija argumenta nije uspjela
+    public ResponseEntity<Map<String, Object>> handValidationErrors(MethodArgumentNotValidException ex){
+        Map<String, Object> errorResponse = new HashMap<>(); // Stvara mapu za pohranu grešaka
+        Map<String, String> fieldErrors = new HashMap<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            // Dodaje grešku u mapu s imenom polja kao ključem i porukom greške kao vrijednošću
+            fieldErrors.put(error.getField(), error.getDefaultMessage());
+        }
+
         errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
         errorResponse.put("error", "Bad Request");
-        errorResponse.put("message", ex.getMessage());
+        errorResponse.put("message", "Validacija nije uspjela");
+        errorResponse.put("errors", fieldErrors);
         errorResponse.put("timestamp", LocalDateTime.now());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

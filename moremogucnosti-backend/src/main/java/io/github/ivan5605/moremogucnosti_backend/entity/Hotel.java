@@ -29,5 +29,5 @@ public class Hotel {
     private String lokacija;
 
     @Column(name = "cijena_nocenja", nullable = false)
-    private int cijenaNocenja;
+    private Integer cijenaNocenja;
 }
