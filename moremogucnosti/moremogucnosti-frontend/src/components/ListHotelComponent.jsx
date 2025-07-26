@@ -31,6 +31,10 @@ const ListHotelComponent = () => {
     })
   }
 
+  function updateHotel(id) {
+    navigator(`/editHotel/${id}`);
+  }
+
   return (
     <div className='container'>
       <h1 className='text-center'>List of hotels</h1>
@@ -56,7 +60,7 @@ const ListHotelComponent = () => {
                 <td>{hotel.cijenaNocenja}</td>
                 <td>
                   <button type='button' className='btn btn-outline-danger m-1' onClick={() => obrisiHotel(hotel.id)}>Obriši</button>
-                  <button type='button' className='btn btn-outline-success m-1'>Uredi</button>
+                  <button type='button' className='btn btn-outline-success m-1' onClick={() => updateHotel(hotel.id)}>Uredi</button>
                 </td>
               </tr>
             )

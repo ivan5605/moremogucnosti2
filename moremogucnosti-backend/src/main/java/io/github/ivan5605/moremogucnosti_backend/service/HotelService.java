@@ -12,4 +12,6 @@ public interface HotelService {
     void deleteHotel(Long id); // Briše hotel po ID-u
 
     HotelDto updateHotel(Long id, HotelDto hotelDto);
+
+    HotelDto getHotel(Long id);
 }

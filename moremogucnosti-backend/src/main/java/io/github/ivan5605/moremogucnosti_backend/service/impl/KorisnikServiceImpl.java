@@ -2,6 +2,7 @@ package io.github.ivan5605.moremogucnosti_backend.service.impl;
 
 import io.github.ivan5605.moremogucnosti_backend.dto.KorisnikDto;
 import io.github.ivan5605.moremogucnosti_backend.entity.Korisnik;
+import io.github.ivan5605.moremogucnosti_backend.exception.DuplicateResourceException;
 import io.github.ivan5605.moremogucnosti_backend.exception.ResourceNotFoundException;
 import io.github.ivan5605.moremogucnosti_backend.mapper.KorisnikMapper;
 import io.github.ivan5605.moremogucnosti_backend.repository.KorisnikRepository;
@@ -36,9 +37,13 @@ public class KorisnikServiceImpl implements KorisnikService {
 
     @Override
     public KorisnikDto addKorisnik(KorisnikDto korisnikDto) {
-        Korisnik korisnik = korisnikMapper.mapToKorisnik(korisnikDto);
-        Korisnik savedKorisnik = korisnikRepository.save(korisnik);
-        return korisnikMapper.mapToKorisnikDto(savedKorisnik);
+        if (korisnikRepository.existsByEmail(korisnikDto.getEmail())){
+            throw new DuplicateResourceException("Korisnik s emailom " + korisnikDto.getEmail() + " već postoji!");
+        } else {
+            Korisnik korisnik = korisnikMapper.mapToKorisnik(korisnikDto);
+            Korisnik savedKorisnik = korisnikRepository.save(korisnik);
+            return korisnikMapper.mapToKorisnikDto(savedKorisnik);
+        }
     }
 
     @Override
@@ -46,5 +51,30 @@ public class KorisnikServiceImpl implements KorisnikService {
         Korisnik korisnik = korisnikRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Korisnik sa id-em " + id + " ne postoji"));
         korisnikRepository.deleteById(id);
+    }
+
+    @Override
+    public KorisnikDto updateKorisnik(Long id, KorisnikDto korisnikDto) {
+        Korisnik korisnik = korisnikRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Korisnik sa ID-jem " + id + " ne postoji!"));
+
+        if (!korisnikDto.getEmail().equalsIgnoreCase(korisnik.getEmail()) && korisnikRepository.existsByEmail(korisnikDto.getEmail())){
+            throw new DuplicateResourceException("Korisnik s emailom " + korisnikDto.getEmail() + " već postoji!");
+        }
+        korisnik.setEmail(korisnikDto.getEmail());
+        korisnik.setIme(korisnikDto.getIme());
+        korisnik.setPrezime(korisnikDto.getPrezime());
+        korisnik.setLozinka(korisnikDto.getLozinka());
+
+        Korisnik updatedKorisnik = korisnikRepository.save(korisnik);
+
+        return korisnikMapper.mapToKorisnikDto(updatedKorisnik);
+    }
+
+    @Override
+    public KorisnikDto getKorisnik(Long id) {
+        Korisnik korisnik = korisnikRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Korisnik sa ID-jem " + id + " ne postoji!"));
+        return korisnikMapper.mapToKorisnikDto(korisnik);
     }
 }

@@ -41,4 +41,15 @@ public class KorisnikController {
         return new ResponseEntity<>("Korisnik sa ID-jem  " + id + "uspješno izbrisan!", HttpStatus.OK);
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<KorisnikDto> updateKorisnik(@PathVariable("id") Long id, @RequestBody KorisnikDto korisnikDto){
+        KorisnikDto korisnikDtoUpdated = korisnikService.updateKorisnik(id, korisnikDto);
+        return new ResponseEntity<>(korisnikDtoUpdated, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<KorisnikDto> getKorisnik(@PathVariable("id") Long id){
+        KorisnikDto korisnikDto = korisnikService.getKorisnik(id);
+        return new ResponseEntity<>(korisnikDto, HttpStatus.OK);
+    }
 }

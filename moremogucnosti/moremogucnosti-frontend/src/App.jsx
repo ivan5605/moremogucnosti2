@@ -20,12 +20,12 @@ function App() {
           <Route path='/' element={<IzbornikComponent />}></Route>
           {/* http://localhost:3000/hoteli */}
           <Route path='/hoteli' element={<ListHotelComponent />}></Route>
-          {/* http://localhost:3000/editHotel */}
-          <Route path='/editHotel' element={<HotelComponent />}></Route>
+          {/* http://localhost:3000/editHotel/id */}
+          <Route path='/editHotel/:id' element={<HotelComponent />}></Route>
           {/* http://localhost:3000/korisnici */}
           <Route path='/korisnici' element={<ListKorisnikComponent />}></Route>
-          {/* http://localhost:3000/korisnici/uredi */}
-          <Route path='/korisnici/uredi' element={<KorisnikComponent />}></Route>
+          {/* http://localhost:3000/korisnici/uredi/id */}
+          <Route path='/korisnici/uredi/:id' element={<KorisnikComponent />}></Route>
         </Routes>
         <FooterComponent />
       </BrowserRouter>

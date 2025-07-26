@@ -25,9 +25,9 @@ public class KorisnikMapper {
         }
         return new Korisnik(
                 korisnikDto.getId(),
+                korisnikDto.getEmail(),
                 korisnikDto.getIme(),
                 korisnikDto.getPrezime(),
-                korisnikDto.getEmail(),
                 korisnikDto.getLozinka()
         );
     }

@@ -1,5 +1,6 @@
 package io.github.ivan5605.moremogucnosti_backend.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -17,6 +18,7 @@ public class KorisnikDto {
     private Long id;
 
     @NotBlank(message = "Unesite email!")
+    @Email(message = "Neispravna email adresa!")
     private String email;
 
     @NotBlank(message = "Unesite ime!")

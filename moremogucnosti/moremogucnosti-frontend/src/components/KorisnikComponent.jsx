@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { addKorisnik, deleteKorisnik } from '../services/KorisnikService'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { addKorisnik, getKorisnik, updateKorisnik } from '../services/KorisnikService'
 
 const KorisnikComponent = () => {
 
@@ -19,6 +19,8 @@ const KorisnikComponent = () => {
   // setKorisnik({...korisnik, ime: dogadaj.target.value}) // Ažurira samo ime korisnika
 
 
+  const { id } = useParams();
+
   const navigator = useNavigate();
 
   const [errors, setErrors] = useState({
@@ -28,7 +30,20 @@ const KorisnikComponent = () => {
     lozinka: ''
   })
 
-  function provjeriUnos() {
+  const [emailError, setEmailError] = useState('');
+
+  useEffect(() => {
+    getKorisnik(id).then((response) => {
+      setIme(response.data.ime);
+      setPrezime(response.data.prezime);
+      setEmail(response.data.email);
+      setLozinka(response.data.lozinka);
+    }).catch(error => {
+      console.error(error.response.data);
+    })
+  }, [id])
+
+  function provjeriUnos() { //razdvoji u funkcije, validacija emaila, trim unapred za sve inpute
     let provjera = true;
 
     const errorsCopy = { ...errors } // Kopira postojeće greške u novi objekt
@@ -54,30 +69,50 @@ const KorisnikComponent = () => {
       provjera = false;
     }
 
-    if (lozinka.trim()) {
-      errorsCopy.lozinka = '';
-    } else {
+    if (!lozinka.trim()) {
       errorsCopy.lozinka = "Lozinka korisnika obavezno je unijeti!"
       provjera = false;
+    } else if (lozinka.length < 5) {
+      errorsCopy.lozinka = "Lozinka mora imati najmanje 5 znakova!"
+      provjera = false;
+    } else if (!/[A-Z]/.test(lozinka)) {
+      errorsCopy.lozinka = "Lozinka mora imati barem jedno veliko slovo!"
+      provjera = false;
+    } else {
+      errorsCopy.lozinka = "";
     }
 
     setErrors(errorsCopy); // Ažurira stanje grešaka
     return provjera; // Vraća rezultat provjere
   }
 
-  function spremiKorisnik(dogadaj) {
+  function spremiIliUpdateKorisnik(dogadaj) {
     dogadaj.preventDefault(); // Sprječava ponovno učitavanje stranice
 
     if (provjeriUnos()) {
       const korisnik = { ime, prezime, email, lozinka }; // Stvara objekt korisnika s podacima iz stanja
       console.log('Korisnik podaci:', korisnik); // Ispisuje podatke korisnika u konzolu
 
-      addKorisnik(korisnik).then(response => {
-        console.log("Korisnik uspješno dodan!", response.data); // Ispisuje uspješnu poruku u konzolu
-        navigator('/korisnici'); // Navigira natrag na stranicu s korisnicima
-      }).catch(error => {
-        console.error("Greška kod dodavanja korisnika!", error.response.data); // Ispisuje grešku u konzolu
-      })
+      if (id) {
+        updateKorisnik(id, korisnik).then((response) => {
+          console.log("Korisnik ažuriran!");
+          navigator('/korisnici');
+        }).catch(error => {
+          setEmailError(error.response.data.message);
+
+        })
+      } else {
+        addKorisnik(korisnik).then(response => {
+          console.log("Korisnik uspješno dodan!", response.data); // Ispisuje uspješnu poruku u konzolu
+          navigator('/korisnici'); // Navigira natrag na stranicu s korisnicima
+        }).catch(error => {
+          if (error.response && error.response.data && error.response.data.message) {
+            setEmailError(error.response.data.message);
+          } else {
+            setEmailError("Došlo je do greške!")
+          }
+        })
+      }
     }
   }
 
@@ -138,8 +173,11 @@ const KorisnikComponent = () => {
                   onChange={(dogadaj) => setLozinka(dogadaj.target.value)} ></input>
                 {errors.lozinka && <div className='invalid-feedback'>{errors.lozinka}</div>}
               </div>
-              <button type='button' className='btn btn-outline-primary' onClick={spremiKorisnik}>Potvrdi</button>
+              {emailError && <div className="alert alert-danger mt-3">{emailError}</div>}
+              <button type='button' className='btn btn-outline-primary' onClick={spremiIliUpdateKorisnik}>Potvrdi</button>
               <button type='button' className='btn btn-outline-danger m-2' onClick={() => navigator('/korisnici')}>Natrag</button>
+
+
             </form>
           </div>
         </div>

@@ -10,4 +10,8 @@ public interface KorisnikService {
     KorisnikDto addKorisnik(KorisnikDto korisnikDto);
 
     void deleteKorisnik(Long id);
+
+    KorisnikDto updateKorisnik(Long id, KorisnikDto korisnikDto);
+
+    KorisnikDto getKorisnik(Long id);
 }

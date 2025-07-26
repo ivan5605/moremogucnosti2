@@ -56,4 +56,12 @@ public class HotelServiceImpl implements HotelService {
 
         return hotelMapper.mapToHotelDto(updatedHotel);
     }
+
+    @Override
+    public HotelDto getHotel(Long id) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel sa ID-jem " + id + " ne postoji!"));
+
+        return hotelMapper.mapToHotelDto(hotel);
+    }
 }

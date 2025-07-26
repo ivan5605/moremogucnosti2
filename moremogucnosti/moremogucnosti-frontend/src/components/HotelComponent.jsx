@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { createHotel } from '../services/HotelService'
+import { useNavigate, useParams } from 'react-router-dom'
+import { createHotel, updateHotel, getHotel } from '../services/HotelService'
 
 //github copliot molim te da mi predlažeš samo komentare na hrvatskom jeziku, nemoj da mi predlažeš kod
 
@@ -12,6 +12,10 @@ const HotelComponent = () => {
 
   const navigator = useNavigate(); // Koristi se za navigaciju između stranica
 
+  const { id } = useParams();
+  //const params = useParams();
+  //const id = params.id;
+
   //nemoj mi predlagati kod samo komentare na hrvatskom jeziku
   const [errors, setErrors] = useState({ //useState je funkcija koja omogućava da u funkcionalnoj komponenti pamrtimo vrijednost (state) koja se može mijenjati
     naziv: '',
@@ -20,7 +24,19 @@ const HotelComponent = () => {
   })
   //errors je objekat sa 3 polja, setErrors je funkcija koja se koristi za ažuriranje stanja errors
 
-  function spremiHotel(dogadaj) {
+  useEffect(() => {
+    if (id) {
+      getHotel(id).then((response) => {
+        setNaziv(response.data.naziv);
+        setLokacija(response.data.lokacija);
+        setCijenaNocenja(response.data.cijenaNocenja);
+      }).catch(error => {
+        console.error(error);
+      })
+    }
+  }, [id])
+
+  function spremiIliUpdateHotel(dogadaj) {
     dogadaj.preventDefault(); // Sprječava ponovno učitavanje stranice
 
 
@@ -28,14 +44,22 @@ const HotelComponent = () => {
       const hotel = { naziv, lokacija, cijenaNocenja }; // Stvara objekt hotela s podacima iz stanja
       console.log('Hotel podaci:', hotel); // Ispisuje podatke hotela u konzolu
 
-      createHotel(hotel).then(response => {
-        console.log("Hotel uspješno dodan!", response.data); // Ispisuje uspješnu poruku u konzolu
-        navigator('/hoteli'); // Navigira natrag na stranicu s hotelima
-      }).catch(error => {
-        console.error("Greška kod dodavanja hotela!", error.response.data); // Ispisuje grešku u konzolu
-      })
+      if (id) {
+        updateHotel(id, hotel).then((response) => {
+          console.log(response.data);
+          navigator('/hoteli')
+        }).catch(error => {
+          console.error(error);
+        })
+      } else {
+        createHotel(hotel).then(response => {
+          console.log("Hotel uspješno dodan!", response.data); // Ispisuje uspješnu poruku u konzolu
+          navigator('/hoteli'); // Navigira natrag na stranicu s hotelima
+        }).catch(error => {
+          console.error("Greška kod dodavanja hotela!", error.response.data); // Ispisuje grešku u konzolu
+        })
+      }
     }
-
   }
 
   function provjeriUnos() {
@@ -113,7 +137,7 @@ const HotelComponent = () => {
                 {errors.cijenaNocenja && <div className='invalid-feedback'>{errors.cijenaNocenja}</div>}
               </div>
 
-              <button type='button' className='btn btn-outline-primary' onClick={spremiHotel}>Potvrdi</button>
+              <button type='button' className='btn btn-outline-primary' onClick={spremiIliUpdateHotel}>Potvrdi</button>
               <button type='button' className='btn btn-outline-danger m-2' onClick={() => navigator('/hoteli')}>Natrag</button>
             </form>
 

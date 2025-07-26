@@ -30,6 +30,10 @@ const ListKorisnikComponent = () => {
     })
   }
 
+  function updateKorisnik(id) {
+    navigator(`/korisnici/uredi/${id}`)
+  }
+
   return (
     <div className='container'>
       <h1 className='text-center'>Lista korisnika</h1>
@@ -55,7 +59,7 @@ const ListKorisnikComponent = () => {
                 <td>{korisnik.lozinka}</td>
                 <td>
                   <button type='button' className='btn btn-outline-danger m-1 mb-0' onClick={() => obrisiKorisnik(korisnik.id)}>Obriši</button>
-                  <button className='btn btn-outline-success'>Uredi</button>
+                  <button type='button' className='btn btn-outline-success' onClick={() => updateKorisnik(korisnik.id)}>Uredi</button>
                 </td>
               </tr>
             )

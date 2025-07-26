@@ -51,4 +51,10 @@ public class HotelController {
         HotelDto updatedHotelDto = hotelService.updateHotel(id, hotelDto);
         return new ResponseEntity<>(updatedHotelDto, HttpStatus.OK);
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity<HotelDto> getHotel (@PathVariable("id") Long id){
+        HotelDto hotelDto = hotelService.getHotel(id);
+        return new ResponseEntity<>(hotelDto, HttpStatus.OK);
+    }
 }
